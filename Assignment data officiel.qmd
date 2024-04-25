@@ -1,0 +1,115 @@
+---
+title: "A Tale of Two Worlds: Unveiling Global Disparities through Military Expenditure, GDP per Capita, and Life Expectancy"
+subtitle: "Data Analytic Assignment"
+author: "Massines Gautier"
+date: 2024-04-25
+format: 
+  html:
+    toc: true
+    theme: Minimalist
+execute: 
+  echo: false
+  warning: false
+  message: false
+---
+
+<div style="text-align:center">
+# **Story of Fatima and Paul**
+</div>
+
+**FATIMA** and **PAUL** are both students in *Congo* and *France* respectively. They are studying in their respective countries and face different problems. The lack of resources and the economic fragility due to years of civil war on the one hand, and the fluctuation of inflation and the war in Europe on the other.
+
+Understanding the dynamics of life expectancy, GDP per capita, and military spending is essential to comprehending the global landscape of human development in today's **interconnected world**. These three variables show the differences that exist both within and between countries in addition to serving as indicators of a nation's economic and social well-being.
+
+We can examine the ways in which these dimensions converge and diverge using data visualization, illuminating the intricate **relationship that exists between security, wealth, and quality of life**. By looking at the experiences of people who live in various parts of the world, we can learn more about the things that influence their day-to-day lives and the difficulties they encounter.
+
+In order to find patterns and trends that highlight the disparities in development and security between regions, we will examine data on military spending, GDP per capita, and life expectancy. We hope to draw attention to the disparities that exist in our global community and the necessity of equitable and sustainable development for all by looking at the experiences of people from Europe and Africa.
+
+```{r}
+#| label: setup
+#| include: false
+
+# librairies
+library(tidyverse)
+library(gapminder)
+library(ggplot2)
+library(maps)
+
+# Import data
+
+unicef_indicator_1 <- read.csv2("~/Infos logiciels/unicef_indicator_1.csv")
+unicef_indicator_2 <- read.csv("~/Infos logiciels/unicef_indicator_2.csv", sep=";")
+unicef_metadata <- read.csv("~/Infos logiciels/unicef_metadata.csv", sep=";")
+```
+
+```{r}
+# Joindre les données
+data_join_1 <- full_join(unicef_metadata, unicef_indicator_1, by = c("year" = "time_period", "country" = "country"))
+
+data_join <- full_join(unicef_metadata, unicef_indicator_2, by = c("year" = "time_period", "country" = "country"))
+
+world_map <- map_data("world")
+
+map_data_join <- full_join(data_join, world_map, by = c("country" = "region"))
+
+map_data_join_2020 <- map_data_join %>%
+  filter(year == 2020)
+```
+<div style="text-align:center">
+
+## **Overview of the economic development of countries**
+</div>
+```{r}
+ggplot(map_data_join_2020, aes(x = long, y = lat, group = group, fill = GDP_per_capita)) +
+  geom_polygon(color = "black") +
+  scale_fill_gradient(low = "green", high = "blue", na.value = "brown", 
+                      name = "GDP per capita", limits = c(5, 100000)) +
+  labs(title = "Economic indicator per country") +
+  theme_minimal()
+```
+
+<div style="text-align:center">
+### *Part 1*
+</div>
+The harsh realities of economic fragility taint Fatima's reality in Africa. Fatima and her community have a difficult time getting access to opportunities for advancement and basic necessities because the GDP per capita is barely above the poverty line. Paul's life in Europe, on the other hand, is marked by financial security and prosperity, with a high GDP per capita that reflects the wealth and bounty of the continent. The stark differences in wealth between Paul and Fatima's worlds underscore the pervasive disparities that still exist between areas, influencing people's opportunities according to where they live.
+
+<div style="text-align:center">
+## **The Rise of Global Military Expenditure**
+</div>
+```{r}
+ggplot(unicef_indicator_1, aes(x = time_period, y = obs_value, fill = "")) +
+  geom_bar(stat = "identity") +
+  labs(title = "Number of military expenditure in the world over time",
+       x = "Years",
+       y = "Trillions of dollard",
+       fill = "USD") +
+  theme_minimal()
+```
+
+<div style="text-align:center">
+### *Part 2*
+</div>
+Another aspect of inequality that shows up as the sun sets on Africa and rises on Europe is military spending, which is best exemplified by the ongoing conflict in Ukraine. Global military spending has increased recently, driven by regional conflicts and geopolitical tensions that pose a threat to peace and stability on a global scale. This increase has been especially noticeable in Europe, where countries like Paul's home country have increased their defense spending in reaction to growing security risks and threats. The ongoing conflict in Ukraine serves as a sobering reminder of the constant threat of war and the necessity of maintaining strong military capabilities in order to protect sovereignty and territorial integrity. Africa, on the other hand, spends very little on the military, which is indicative of the region's constrained defense budget in the face of competing development priorities. The stark differences in military spending that exist between the two continents highlight the different approaches each takes to managing geopolitical unrest and maintaining international security.
+
+<div style="text-align:center">
+## **Navigating Health Disparities**
+</div>
+```{r}
+map_data_join_2020 <- map_data_join %>% filter(year == 2020)
+
+ggplot(map_data_join_2020, aes(x = long, y = lat, group = group, fill = Life_expectancy_at_birth)) +
+  geom_polygon(color = "black") +
+  scale_fill_gradient(low = "purple", high = "blue", na.value = "brown", 
+                      name = "Life expectancy", limits = c(5, 100)) +
+  labs(title = "Map of the life expectancy in countries") +
+  theme_minimal()
+```
+<div style="text-align:center">
+### *Part 3*
+</div>
+Regarding health, life expectancy is a sensitive measure of a country's level of well-being and quality of healthcare system. Europe has the longest life expectancy in the world, a testament to the region's dedication to encouraging longevity and vitality in its people. This is because the continent offers universal access to high-quality healthcare. In the meantime, life expectancy in Africa is still relatively low, and the continent's residents' ambitions are constrained by their restricted access to resources and healthcare. The huge differences in healthcare outcomes and access between the two continents are highlighted by the difference in life expectancy, which also highlights the difficulties Fatima and her counterparts face in achieving optimal health and well-being.
+
+<div style="text-align:center">
+# **Conclusion**
+</div>
+Fatima and Paul's disparate lives provide a sobering window into the systemic injustices that continue to exist on a worldwide basis. We are reminded of the critical need for coordinated efforts to address the underlying causes of inequality and promote a more equitable world for all as we consider their journeys. We can work toward a future where every person, regardless of where they live, has the opportunity to thrive and prosper by bridging the gap between regions and guaranteeing access to opportunities and resources.
