@@ -37,9 +37,9 @@ library(maps)
 
 # Import data
 
-unicef_indicator_1 <- read.csv2("~/Infos logiciels/unicef_indicator_1.csv")
-unicef_indicator_2 <- read.csv("~/Infos logiciels/unicef_indicator_2.csv", sep=";")
-unicef_metadata <- read.csv("~/Infos logiciels/unicef_metadata.csv", sep=";")
+unicef_indicator_1 <- read_csv("unicef_indicator_1.csv")
+unicef_indicator_2 <- read_csv("unicef_indicator_2.csv")
+unicef_metadata <- read_csv("unicef_metadata.csv")
 ```
 
 ```{r}
@@ -60,7 +60,7 @@ map_data_join_2020 <- map_data_join %>%
 ## **Overview of the economic development of countries**
 </div>
 ```{r}
-ggplot(map_data_join_2020, aes(x = long, y = lat, group = group, fill = GDP_per_capita)) +
+ggplot(map_data_join_2020, aes(x = long, y = lat, group = group, fill = `GDP per capita (constant 2015 US$)`)) +
   geom_polygon(color = "black") +
   scale_fill_gradient(low = "green", high = "blue", na.value = "brown", 
                       name = "GDP per capita", limits = c(5, 100000)) +
@@ -97,7 +97,7 @@ Another aspect of inequality that shows up as the sun sets on Africa and rises o
 ```{r}
 map_data_join_2020 <- map_data_join %>% filter(year == 2020)
 
-ggplot(map_data_join_2020, aes(x = long, y = lat, group = group, fill = Life_expectancy_at_birth)) +
+ggplot(map_data_join_2020, aes(x = long, y = lat, group = group, fill = `Life expectancy at birth, total (years)`)) +
   geom_polygon(color = "black") +
   scale_fill_gradient(low = "purple", high = "blue", na.value = "brown", 
                       name = "Life expectancy", limits = c(5, 100)) +
